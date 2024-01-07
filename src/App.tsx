@@ -1,7 +1,14 @@
 import { Providers } from '@app/hooks/providers';
+import { Navbar } from '@app/components/layout';
+import { KanbanBoard } from '@app/components/kanban';
+
 export function App() {
   return (
     <Providers>
-      <main className='item-center flex justify-center'>Hello World</main>
+      <Navbar />
+      <main className='item-center flex justify-center'>
+        <KanbanBoard />
+      </main>
     </Providers>
+  );
 }
