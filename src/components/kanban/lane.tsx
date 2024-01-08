@@ -10,6 +10,7 @@ import {
   ScrollArea,
   ScrollBar,
 } from '@app/components/ui';
+import { KanbanItem } from './item';
 
 export type KanbanLaneProps = {
   title?: string;
@@ -26,10 +27,7 @@ export const KanbanLane: React.FC<KanbanLaneProps> = ({ title }) => {
         <ScrollArea className='h-[50vh]'>
           <div className='flex flex-col gap-4'>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-              <div className='mx-2 flex items-center justify-between rounded border p-4'>
-                hello
-                <Grip className='h-4 w-4 cursor-grab' />
-              </div>
+              <KanbanItem />
             ))}
           </div>
           <ScrollBar orientation='vertical' />
