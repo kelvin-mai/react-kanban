@@ -1,4 +1,6 @@
 import { PlusCircle, Grip } from 'lucide-react';
+import { CSS } from '@dnd-kit/utilities';
+import { useSortable, SortableContext } from '@dnd-kit/sortable';
 
 import {
   Card,
@@ -10,31 +12,60 @@ import {
   ScrollArea,
   ScrollBar,
 } from '@app/components/ui';
+import { cn } from '@app/lib/utils';
+import { Board, DragType, Task } from '@app/lib/types';
 import { KanbanItem } from './item';
 
 export type KanbanLaneProps = {
-  title?: string;
+  board: Board;
+  tasks: Task[];
+  onAddTask: () => void;
 };
 
-export const KanbanLane: React.FC<KanbanLaneProps> = ({ title }) => {
+export const KanbanLane: React.FC<KanbanLaneProps> = ({
+  board,
+  tasks,
+  onAddTask,
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: board.id,
+    data: {
+      type: DragType.Board,
+      board,
+    },
+  });
   return (
-    <Card className='w-[400px]'>
+    <Card
+      className={cn('min-w-[400px]', isDragging && 'z-10 opacity-50')}
+      {...attributes}
+      ref={setNodeRef}
+      style={{ transition, transform: CSS.Transform.toString(transform) }}
+    >
       <CardHeader className='flex-row items-center justify-between'>
-        <CardTitle>{title || 'Board'}</CardTitle>
-        <Grip className='h-6 w-6 cursor-grab' />
+        <CardTitle>{board.title}</CardTitle>
+        <Grip className='h-6 w-6 cursor-grab' {...listeners} />
       </CardHeader>
       <CardContent>
         <ScrollArea className='h-[50vh]'>
           <div className='flex flex-col gap-4'>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-              <KanbanItem />
-            ))}
+            <SortableContext items={tasks.map((t) => t.id)}>
+              {tasks.map((t) => (
+                <KanbanItem key={t.id} task={t} />
+              ))}
+            </SortableContext>
           </div>
-          <ScrollBar orientation='vertical' />
+          <ScrollBar />
         </ScrollArea>
       </CardContent>
       <CardFooter>
-        <Button>
+        <Button onClick={onAddTask}>
           <PlusCircle className='mr-4 h-4 w-4' />
           Add Task
         </Button>
