@@ -13,20 +13,15 @@ import {
   ScrollBar,
 } from '@app/components/ui';
 import { cn } from '@app/lib/utils';
-import { Board, DragType, Task } from '@app/lib/types';
+import { Board, DragType } from '@app/lib/types';
+import { useKanbanActions, useKanbanDerived } from '@app/store/kanban';
 import { KanbanItem } from './item';
 
 export type KanbanLaneProps = {
   board: Board;
-  tasks: Task[];
-  onAddTask: () => void;
 };
 
-export const KanbanLane: React.FC<KanbanLaneProps> = ({
-  board,
-  tasks,
-  onAddTask,
-}) => {
+export const KanbanLane: React.FC<KanbanLaneProps> = ({ board }) => {
   const {
     attributes,
     listeners,
@@ -41,6 +36,9 @@ export const KanbanLane: React.FC<KanbanLaneProps> = ({
       board,
     },
   });
+  const { getBoardTasks } = useKanbanDerived();
+  const { createTask } = useKanbanActions();
+  const tasks = getBoardTasks(board.id);
   return (
     <Card
       className={cn('min-w-[400px]', isDragging && 'z-10 opacity-50')}
@@ -65,7 +63,7 @@ export const KanbanLane: React.FC<KanbanLaneProps> = ({
         </ScrollArea>
       </CardContent>
       <CardFooter>
-        <Button onClick={onAddTask}>
+        <Button onClick={() => createTask(board.id)}>
           <PlusCircle className='mr-4 h-4 w-4' />
           Add Task
         </Button>
