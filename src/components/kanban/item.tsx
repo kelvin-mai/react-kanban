@@ -28,7 +28,7 @@ export const KanbanItem: React.FC<KanbanItemProps> = ({ task }) => {
   return (
     <div
       className={cn(
-        'mx-2 flex items-center justify-between rounded border p-4',
+        'mx-2 flex items-center justify-between rounded border bg-white p-4',
         isDragging && 'z-10 opacity-50',
       )}
       {...attributes}

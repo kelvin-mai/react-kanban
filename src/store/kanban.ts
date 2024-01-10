@@ -16,6 +16,7 @@ export type KanbanStore = {
     moveBoard(activeId: UniqueIdentifier, overId: UniqueIdentifier): void;
     createTask(boardId: UniqueIdentifier): void;
     moveTask(activeId: UniqueIdentifier, overId: UniqueIdentifier): void;
+    taskToBoard(taskId: UniqueIdentifier, boardId: UniqueIdentifier): void;
   };
 };
 
@@ -56,6 +57,13 @@ export const useKanbanStore = create<KanbanStore>((set, get) => ({
           state.tasks,
           state.tasks.findIndex((t) => t.id === activeId),
           state.tasks.findIndex((t) => t.id === overId),
+        ),
+      })),
+    taskToBoard: (taskId, boardId) =>
+      set((state) => ({
+        ...state,
+        tasks: state.tasks.map((t) =>
+          t.id === taskId ? { ...t, boardId } : t,
         ),
       })),
   },
