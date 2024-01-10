@@ -19,10 +19,22 @@ import { useKanbanActions, useKanbanStore } from '@app/store/kanban';
 import { KanbanLane } from './lane';
 import { KanbanItem } from './item';
 
+const OverlayItem: React.FC<{ data: DragData | null }> = ({ data }) => {
+  switch (data?.type) {
+    case DragType.Board:
+      return <KanbanLane board={data.board} />;
+    case DragType.Task:
+      return <KanbanItem task={data.task} />;
+    default:
+      return null;
+  }
+};
+
 export const KanbanBoard = () => {
   const [activeDrag, setActiveDrag] = useState<DragData | null>(null);
   const { boards } = useKanbanStore();
-  const { createBoard, moveBoard, moveTask, taskToBoard } = useKanbanActions();
+  const { createBoard, moveBoard, moveTask, updateTaskBoardId } =
+    useKanbanActions();
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 10 } }),
@@ -44,12 +56,12 @@ export const KanbanBoard = () => {
         over?.data.current?.type === DragType.Board &&
         active.data.current?.task.boardId !== over.data.current.board.id
       ) {
-        taskToBoard(active.id, over.id);
+        updateTaskBoardId(active.id, over.id);
       } else if (over?.data.current?.type === DragType.Task) {
         if (
           active.data.current?.task.boardId !== over.data.current.task.boardId
         ) {
-          taskToBoard(active.id, over.data.current.task.boardId);
+          updateTaskBoardId(active.id, over.data.current.task.boardId);
         } else if (active.id !== over.id) {
           moveTask(active.id, over.id);
         }
@@ -58,23 +70,10 @@ export const KanbanBoard = () => {
     setActiveDrag(null);
   };
 
-  const ActiveItem: React.FC<{ activeDrag: DragData | null }> = ({
-    activeDrag,
-  }) => {
-    switch (activeDrag?.type) {
-      case DragType.Board:
-        return <KanbanLane board={activeDrag.board} />;
-      case DragType.Task:
-        return <KanbanItem task={activeDrag.task} />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className='container py-4'>
       <Button onClick={createBoard}>
-        <PlusCircle className='mr-4 h-4 w-4' />
+        <PlusCircle className='mr-2 h-4 w-4' />
         Add board
       </Button>
       <ScrollArea>
@@ -100,7 +99,7 @@ export const KanbanBoard = () => {
                 easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
               }}
             >
-              <ActiveItem activeDrag={activeDrag} />
+              <OverlayItem data={activeDrag} />
             </DragOverlay>,
             document.body,
           )}

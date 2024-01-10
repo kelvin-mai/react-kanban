@@ -9,6 +9,7 @@ export type Task = {
   id: UniqueIdentifier;
   boardId: UniqueIdentifier;
   title: string;
+  description: string;
 };
 
 export enum DragType {

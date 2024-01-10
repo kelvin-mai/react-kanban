@@ -4,8 +4,9 @@ import { CSS } from '@dnd-kit/utilities';
 
 import { DragType, Task } from '@app/lib/types';
 import { cn } from '@app/lib/utils';
+import { KanbanItemDialog } from './item-dialog';
 
-export type KanbanItemProps = {
+type KanbanItemProps = {
   task: Task;
 };
 
@@ -28,15 +29,18 @@ export const KanbanItem: React.FC<KanbanItemProps> = ({ task }) => {
   return (
     <div
       className={cn(
-        'mx-2 flex items-center justify-between rounded border bg-white p-4',
+        'mx-2 flex cursor-default items-center justify-between rounded border bg-white p-4',
         isDragging && 'z-10 opacity-50',
       )}
       {...attributes}
       ref={setNodeRef}
       style={{ transition, transform: CSS.Transform.toString(transform) }}
     >
-      {task.title}
-      <Grip className='h-4 w-4 cursor-grab' {...listeners} />
+      <span>{task.title}</span>
+      <div className='flex gap-2'>
+        <KanbanItemDialog task={task} />
+        <Grip className='h-4 w-4 cursor-grab' {...listeners} />
+      </div>
     </div>
   );
 };
