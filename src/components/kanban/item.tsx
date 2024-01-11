@@ -29,7 +29,7 @@ export const KanbanItem: React.FC<KanbanItemProps> = ({ task }) => {
   return (
     <div
       className={cn(
-        'mx-2 flex cursor-default items-center justify-between rounded border bg-white p-4',
+        'mx-2 flex cursor-default items-center justify-between rounded border bg-white p-4 text-slate-900 dark:bg-slate-700 dark:text-slate-50',
         isDragging && 'z-10 opacity-50',
       )}
       {...attributes}
